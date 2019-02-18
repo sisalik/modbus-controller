@@ -30,6 +30,7 @@ If you want to use random data for demonstration/development purposes, use:
 
 `python modbus_controller.py simulation`
 
+Once the server is running, open `interface.html` in a browser to see the user interface. Follow the instructions to run a test routine or click on the gear icon in the top right for direct access to the hardware devices.
 
 #### Configuration
 
