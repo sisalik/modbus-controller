@@ -1,0 +1,215 @@
+<title>Modbus Controller</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/w3.css">
+<link rel="stylesheet" href="css/modbus-controller.css">
+
+<script src="js/jquery-3.3.1.min.js"></script>
+
+<body>
+  <!-- Top menu -->
+  <header class="w3-blue w3-xlarge">
+    <span class="w3-left w3-padding w3-hide-medium w3-hide-small truncate" id="check-title">Sample routine</span>
+    <div class="w3-right w3-hover-white" id="device-menu-btn" title="Toggle device menu"><span id="device-menu-icon"
+        class="material-icons">settings</span></div>
+    <div class="w3-right w3-hover-white" id="fullscreen-btn" title="Toggle full screen"><span id="device-menu-icon"
+        class="material-icons">fullscreen</span></div>
+    <div class="w3-center w3-padding" id="check-stages"></div>
+  </header>
+  <!-- Modal for messages -->
+  <div id="modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-panel w3-display-container">
+      <p id="modal-heading" class="w3-padding"></p>
+      <p class="w3-padding" id="modal-message"></p>
+      <p class="w3-padding">
+        <button id="modal-button" class="w3-right">Next part</button>
+      </p>
+      <span id="modal-close" class="w3-button w3-xlarge w3-display-topright">&times;</span>
+    </div>
+  </div>
+  <!-- Loading splash screen -->
+  <div id="splash" class="w3-modal" style="display: block;">
+    <div class="w3-modal-content w3-panel w3-display-container w3-padding-large w3-center">
+      <i class="material-icons w3-spin" style="vertical-align: text-bottom;">refresh</i>
+      <span class="w3-padding-small w3-xlarge" id="splash-message">Loading check data</span>
+    </div>
+  </div>
+  <!-- Main content -->
+  <div id="main-container" class="w3-main w3-padding-large w3-display-container">
+    <div class="stage" id="stage-1" data-name="Setup">
+      <h2>Test description</h2>
+      <p><b>Rationale:</b> This is a sample test routine.</p>
+      <p><b>Type:</b> Leak check</p>
+      <p><b>Part serial no:</b> 54MP-L3</p>
+      <div class="w3-row">
+        <label for="operator-name" class="input-label">Operator:</label>
+
+        <select class="w3-select" id="operator-name">
+          <option value="null">Please select</option>
+
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+
+        </select>
+      </div>
+
+      <p>Some instructions on how to prepare for the test here. Some instructions on how to prepare for the test here. Some instructions on how to prepare for the test here. Some instructions on how to prepare for the test here. Some instructions on how to prepare for the test here.</p>
+
+    </div>
+    <div class="stage" id="stage-2" data-name="Measure">
+      <h2>Measure</h2>
+
+      <p>Confirm the check configuration below and click on the Start button to begin the check.</p>
+      <canvas id="live-plot" width="932px" height="408px"></canvas>
+      <div class="w3-row">
+        <div class="w3-half padding-right">
+          <h5>Configuration</h5>
+          <div class="w3-row">
+            <div class="input-label-container"><span class="input-label">Pressure setpoint</span><span
+                class="input-unit">(mbar)</span></div>
+            <input class="indicator w3-input w3-padding-small w3-right" value="100.0" disabled>
+          </div>
+          <div class="w3-row">
+            <div class="input-label-container"><span class="input-label">Leakage rate USL</span><span
+                class="input-unit">(sccm)</span></div>
+            <input class="indicator w3-input w3-padding-small w3-right" value="50.0" disabled>
+          </div>
+          <div class="w3-row">
+            <div class="input-label-container"><span class="input-label">Expected leakage rate</span><span
+                class="input-unit">(sccm)</span></div>
+            <input class="indicator w3-input w3-padding-small w3-right" value="20.0" disabled>
+          </div>
+          <button class="w3-green w3-right" id="start-stop-check-btn">Start</button>
+          <button class="w3-amber w3-text-white w3-disabled w3-margin-right w3-right"
+            id="pause-check-btn">Pause</button>
+          <div class="w3-row w3-center">
+            <span class="w3-tag w3-padding w3-round-xxlarge w3-right" id="check-status"></span>
+          </div>
+        </div>
+        <div class="w3-half padding-right">
+          <h5>Measurements</h5>
+
+          <div class="w3-row">
+            <div class="input-label-container"><span class="input-label">Pressure</span><span
+                class="input-unit">(mbar)</span></div>
+            <input class="indicator w3-input w3-padding-small w3-right" id="current-pressure" value="" disabled>
+          </div>
+
+          <div class="w3-row">
+            <div class="input-label-container"><span class="input-label">Flow rate</span><span
+                class="input-unit">(sccm)</span></div>
+            <input class="indicator w3-input w3-padding-small w3-right" id="current-flow" value="" disabled>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="stage" id="stage-3" data-name="Results">
+      <h2>Results</h2>
+
+      <p>Review the results below and click on the Finish button to submit the results into the database.</p>
+      <p id="result-text"></p>
+      <div class="w3-half">
+        <table class="w3-table w3-striped">
+          <tr class="w3-blue">
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Test identifier</td>
+            <td>T123-456</td>
+          </tr>
+          <tr>
+            <td>Part serial no.</td>
+            <td>54MP-L3</td>
+          </tr>
+          <tr>
+            <td>Operator</td>
+            <td id="result-operator"></td>
+          </tr>
+          <tr>
+            <td>Ambient temperature</td>
+            <td id="result-ambient-temperature"></td>
+          </tr>
+          <tr>
+            <td>Ambient pressure</td>
+            <td id="result-ambient-pressure"></td>
+          </tr>
+          <tr>
+            <td>Test pressure</td>
+            <td id="result-pressure"></td>
+          </tr>
+          <tr>
+            <td>Leakage rate</td>
+            <td id="result-flow"></td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+    <div class="w3-xlarge" id="nav-buttons">
+      <button class="nav-btn w3-blue" id="back-btn">Back</button>
+      <button class="nav-btn w3-blue w3-disabled" id="next-btn">Next</button>
+    </div>
+  </div>
+  <!-- Device menu -->
+  <div id="device-menu" class="w3-main w3-padding-large w3-display-container">
+    <div class="w3-border-bottom w3-row">
+      <h2 style="display: inline-block;">Controller</h2>
+      <button id="controller-restart-btn" class="w3-margin-left w3-margin-top w3-blue w3-right" data-mode="3"
+        title="Restart the controller software">Restart</button>
+      <button id="stream-scaled-btn"
+        class="stream-select-btn w3-amber w3-hover-white w3-margin-top w3-right w3-text-white round-right" data-mode="0"
+        title="Show the scaled value">Scaled</button>
+      <button id="stream-raw-btn"
+        class="stream-select-btn w3-border-right w3-light-grey w3-hover-white w3-margin-top w3-right round-none"
+        data-mode="1" title="Show the raw value">Raw</button>
+      <button id="stream-avg-btn"
+        class="stream-select-btn w3-border-right w3-light-grey w3-hover-white w3-margin-top w3-right round-none"
+        data-mode="2" title="Show the 5-second average">Average</button>
+      <button id="stream-stddev-btn"
+        class="stream-select-btn w3-border-right w3-light-grey w3-hover-white w3-margin-top w3-right round-left"
+        data-mode="3" title="Show the 5-second standard deviation">StdDev</button>
+    </div>
+    <div id="list-d-ins" class="w3-quarter">
+      <h4>Digital inputs</h4>
+    </div>
+    <div id="list-d-outs" class="w3-quarter">
+      <h4>Digital outputs</h4>
+    </div>
+    <div id="list-a-ins" class="w3-quarter">
+      <h4>Analogue inputs</h4>
+    </div>
+    <div id="list-a-outs" class="w3-quarter">
+      <h4>Analogue outputs</h4>
+    </div>
+  </div>
+  <script>
+    var checkId = 123;
+    var testNumber = "Development";
+    var partSerials = ["sample",];
+    var websocketServer = "ws://localhost:11000";
+
+    var checkConfig = {
+      "pressureSP": 100.0,
+      "maxLeakage": 50.0,
+      "expectedLeakage": 20.0,
+      "refPressure": null
+    };
+
+    checkConfig["debug"] = true;
+    checkConfig["test"] = testNumber;
+    checkConfig["step"] = "0." + checkId;
+    checkConfig["name"] = "LEAK";
+    checkConfig["serial"] = "sample";
+  </script>
+
+  <script src="js/moment.min.js"></script>
+  <script src="js/Chart.min.js"></script>
+  <script src="js/chartjs-plugin-streaming.min.js"></script>
+  <script src="js/chartjs-plugin-annotation.js"></script>
+  <script src="js/chartjs-plugin-zoom.min.js"></script>
+
+  <script src="js/leak-check.js"></script>
+  <script src="js/modbus-controller.js"></script>
+</body>

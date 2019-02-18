@@ -1,0 +1,42 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "950f6b134a90895f71051c7715ab7133aa0f91640b2c9ee465db4d3daf7361da"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "2.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "pymodbustcp": {
+            "hashes": [
+                "sha256:61721105608bd533a703c15f62e431426f986398e2fdbe7f9729ddc58678a90b"
+            ],
+            "index": "pypi",
+            "version": "==0.1.8"
+        },
+        "simplewebsocketserver": {
+            "hashes": [
+                "sha256:d01ecd996d4e3b91e710c6ffaabe7b04661213d6c30e5c626395704de9cf0d5e"
+            ],
+            "index": "pypi",
+            "version": "==0.1.1"
+        },
+        "win-inet-pton": {
+            "hashes": [
+                "sha256:a45bc3073469afb5afd0e395aaabd836040a20ba1f2a6dd1196fa2b210ba386e"
+            ],
+            "index": "pypi",
+            "version": "==1.0.1"
+        }
+    },
+    "develop": {}
+}
