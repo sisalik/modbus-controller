@@ -1,6 +1,9 @@
 # modbus-controller
 A Python controller for Modbus devices. Used as a lightweight PC-based replacement for a PLC system.
 
+<img src="https://raw.githubusercontent.com/sisalik/modbus-controller/master/img/screenshot-1.png" />
+<img src="https://raw.githubusercontent.com/sisalik/modbus-controller/master/img/screenshot-2.png" />
+
 Features:
 - Reads and writes data to supported Modbus/TCP devices over Ethernet
 - User-defined routines that manipulate I/O devices in a programmatic manner
